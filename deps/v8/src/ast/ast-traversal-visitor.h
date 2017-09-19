@@ -211,11 +211,6 @@ void AstTraversalVisitor<Subclass>::VisitSwitchStatement(
 }
 
 template <class Subclass>
-void AstTraversalVisitor<Subclass>::VisitCaseClause(CaseClause* clause) {
-  UNREACHABLE();
-}
-
-template <class Subclass>
 void AstTraversalVisitor<Subclass>::VisitDoWhileStatement(
     DoWhileStatement* stmt) {
   PROCESS_NODE(stmt);
@@ -357,6 +352,12 @@ void AstTraversalVisitor<Subclass>::VisitAssignment(Assignment* expr) {
   PROCESS_EXPRESSION(expr);
   RECURSE_EXPRESSION(Visit(expr->target()));
   RECURSE_EXPRESSION(Visit(expr->value()));
+}
+
+template <class Subclass>
+void AstTraversalVisitor<Subclass>::VisitCompoundAssignment(
+    CompoundAssignment* expr) {
+  VisitAssignment(expr);
 }
 
 template <class Subclass>

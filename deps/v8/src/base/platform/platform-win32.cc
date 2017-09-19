@@ -828,7 +828,6 @@ void OS::Guard(void* address, const size_t size) {
 
 void OS::Unprotect(void* address, const size_t size) {
   LPVOID result = VirtualAlloc(address, size, MEM_COMMIT, PAGE_READWRITE);
-  DCHECK_IMPLIES(result != nullptr, GetLastError() == 0);
   USE(result);
 }
 
@@ -1214,6 +1213,7 @@ VirtualMemory::VirtualMemory(size_t size, void* hint)
 VirtualMemory::VirtualMemory(size_t size, size_t alignment, void* hint)
     : address_(NULL), size_(0) {
   DCHECK((alignment % OS::AllocateAlignment()) == 0);
+  hint = AlignedAddress(hint, alignment);
   size_t request_size = RoundUp(size + alignment,
                                 static_cast<intptr_t>(OS::AllocateAlignment()));
   void* address = ReserveRegion(request_size, hint);

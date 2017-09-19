@@ -6,8 +6,10 @@
 
 #include "src/regexp/ia32/regexp-macro-assembler-ia32.h"
 
+#include "src/assembler-inl.h"
 #include "src/log.h"
 #include "src/macro-assembler.h"
+#include "src/objects-inl.h"
 #include "src/regexp/regexp-macro-assembler.h"
 #include "src/regexp/regexp-stack.h"
 #include "src/unicode.h"
@@ -1190,7 +1192,7 @@ void RegExpMacroAssemblerIA32::SafeCallTarget(Label* name) {
 
 
 void RegExpMacroAssemblerIA32::Push(Register source) {
-  DCHECK(!source.is(backtrack_stackpointer()));
+  DCHECK(source != backtrack_stackpointer());
   // Notice: This updates flags, unlike normal Push.
   __ sub(backtrack_stackpointer(), Immediate(kPointerSize));
   __ mov(Operand(backtrack_stackpointer(), 0), source);
@@ -1205,7 +1207,7 @@ void RegExpMacroAssemblerIA32::Push(Immediate value) {
 
 
 void RegExpMacroAssemblerIA32::Pop(Register target) {
-  DCHECK(!target.is(backtrack_stackpointer()));
+  DCHECK(target != backtrack_stackpointer());
   __ mov(target, Operand(backtrack_stackpointer(), 0));
   // Notice: This updates flags, unlike normal Pop.
   __ add(backtrack_stackpointer(), Immediate(kPointerSize));

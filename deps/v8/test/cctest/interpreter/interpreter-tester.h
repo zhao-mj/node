@@ -46,10 +46,6 @@ class InterpreterCallable {
   Handle<JSFunction> function_;
 };
 
-namespace {
-const char kFunctionName[] = "f";
-}  // namespace
-
 class InterpreterTester {
  public:
   InterpreterTester(Isolate* isolate, const char* source,
@@ -82,6 +78,8 @@ class InterpreterTester {
 
   static std::string function_name();
 
+  static const char kFunctionName[];
+
  private:
   Isolate* isolate_;
   const char* source_;
@@ -110,7 +108,7 @@ class InterpreterTester {
       function = Handle<JSFunction>::cast(v8::Utils::OpenHandle(
           *v8::Local<v8::Function>::Cast(CompileRun(source.c_str()))));
       function->ReplaceCode(
-          *isolate_->builtins()->InterpreterEntryTrampoline());
+          *BUILTIN_CODE(isolate_, InterpreterEntryTrampoline));
     }
 
     if (!bytecode_.is_null()) {

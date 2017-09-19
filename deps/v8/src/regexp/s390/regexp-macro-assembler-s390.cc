@@ -6,6 +6,7 @@
 
 #if V8_TARGET_ARCH_S390
 
+#include "src/assembler-inl.h"
 #include "src/base/bits.h"
 #include "src/code-stubs.h"
 #include "src/log.h"
@@ -1174,14 +1175,14 @@ void RegExpMacroAssemblerS390::SafeCallTarget(Label* name) {
 }
 
 void RegExpMacroAssemblerS390::Push(Register source) {
-  DCHECK(!source.is(backtrack_stackpointer()));
+  DCHECK(source != backtrack_stackpointer());
   __ lay(backtrack_stackpointer(),
          MemOperand(backtrack_stackpointer(), -kPointerSize));
   __ StoreP(source, MemOperand(backtrack_stackpointer()));
 }
 
 void RegExpMacroAssemblerS390::Pop(Register target) {
-  DCHECK(!target.is(backtrack_stackpointer()));
+  DCHECK(target != backtrack_stackpointer());
   __ LoadP(target, MemOperand(backtrack_stackpointer()));
   __ la(backtrack_stackpointer(),
         MemOperand(backtrack_stackpointer(), kPointerSize));
